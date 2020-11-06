@@ -9,7 +9,7 @@ module.exports = function(api) {
             ["module-resolver",{
                 "@": ["./src"],
                 "alias": {
-                  "tailwind": "./tailwind.js",
+                  "tailwind": "./plugins/tailwind/tailwind.js",
                   "components": "./src/components",
                 }
               }
