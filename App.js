@@ -1,31 +1,54 @@
-import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
-import { tailwind, getColor } from 'tailwind'
-import BottomMenu from 'components/BottomMenu'
-
-const primary100 = tailwind('text-primary-100').color
+import React, { useState } from 'react'
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import logo from '@/images/me.jpg'
+import * as ImagePicker from 'expo-image-picker'
+import { tailwind } from 'tailwind'
 
 export default function App() {
+  const [selectedImage, setSelectedImage] = useState(null)
+
+  let openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync()
+
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!')
+      return
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync()
+
+    if (pickerResult.cancelled === true) {
+      return
+    }
+
+    setSelectedImage({ localUri: pickerResult.uri })
+  }
+
+  if (selectedImage !== null) {
+    return (
+      <View style={styles.container}>
+        <Image
+          source={{ uri: selectedImage.localUri }}
+          style={styles.thumbnail}
+        />
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
-      <View style={tailwind('items-center')}>
-        <View style={tailwind('bg-blue-200 py-1 rounded-full mt-12')}>
-          <Text style={tailwind('text-primary-500 font-semibold')}>
-            Hello Tailwind
-          </Text>
-        </View>
-      </View>
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text>Заголовок</Text>
-        <iframe
-        style={tailwind('w-full')}
-          // src="https://facecast.net/v/5d4bpk"
-        ></iframe>
-      </View>
+      <Text style={styles.instruction}>
+        To share a photo from your phone with a friend, just press the button
+        below!
+      </Text>
+      <Image source={logo} style={styles.logo} />
 
-      <View style={tailwind('fixed bottom-0 left-0 right-0 bg-white h-20 w-full')}>
-        <BottomMenu/>
-      </View>
+      <TouchableOpacity
+        onPress={openImagePickerAsync}
+        style={tailwind('bg-blue-500 rounded-md mt-10 p-2')}
+      >
+        <Text style={styles.buttonText}>Take a picture</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -33,9 +56,26 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: primary100,
-    height: 100,
+    backgroundColor: '#888',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-
+  instruction: {
+    color: 'white',
+    fontSize: 18,
+    marginHorizontal: 15,
+  },
+  buttonText: {
+    color: 'white',
+  },
+  logo: {
+    width: 320,
+    height: 320,
+    resizeMode: 'contain',
+  },
+  thumbnail: {
+    width: 300,
+    height: 300,
+    resizeMode: 'contain',
+  },
 })

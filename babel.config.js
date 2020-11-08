@@ -11,6 +11,7 @@ module.exports = function(api) {
                 "alias": {
                   "tailwind": "./plugins/tailwind/tailwind.js",
                   "components": "./src/components",
+                  "@": "./src",
                 }
               }
             ]
